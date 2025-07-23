@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Imposter Game (Pinglish)</title>
+  <title>Imposter Afghani</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      text-align: center;
-      padding: 40px;
-    }
+  body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0072ff 0%, #00c851 40%, #ffeb3b 70%, #9c27b0 100%);
+  color: #fff;
+  text-align: center;
+  padding: 40px;
+}
     .hidden { display: none; }
     button {
       background-color: #007bff;
@@ -50,13 +50,13 @@
 </head>
 <body>
 
-  <h1>Imposter (Kalameh Version)</h1>
+  <h1>Imposter Afghani</h1>
 
   <div id="setup">
-    <p>Chand nafar hastid?</p>
+    <p>Chand nafar hastem?</p>
     <input type="number" id="playerCount" min="3" max="15" value="5" />
 
-    <p>Kalameh morede nazar ro vared kon (optional):</p>
+    <p>Kalameh morede nazaret neveshteh kon (optional):</p>
     <input type="text" id="customWord" placeholder="Masalan: pizza, darya, etc" />
 
     <br />
@@ -64,17 +64,17 @@
   </div>
 
   <div id="nameEntry" class="hidden">
-    <h2>Esme har bazikon ro benevis:</h2>
+    <h2>Esme har bazikono neveshte kon:</h2>
     <form id="nameForm" onsubmit="startGame(); return false;">
       <div id="nameInputs" class="name-inputs"></div>
-      <button type="submit">Shoroo Bazi</button>
+      <button type="submit">Shoroeh Bazi</button>
     </form>
   </div>
 
   <div id="game" class="hidden">
-    <p>Telefon ro be bazi-kon-e badi bede va roosh click kon!</p>
+    <p>Telefono bede be bazi-kon-e badi va kelimer negah kon!</p>
     <h2 id="playerLabel"></h2>
-    <button onclick="showRole()">Nemayeshe naghsh</button>
+    <button onclick="showRole()">Kelimehr noshon bede</button>
     <div id="roleDisplay" class="hidden">
       <h2 id="roleText" class=""></h2>
       <button onclick="nextPlayer()">Bede be bazi-kon-e badi</button>
@@ -83,14 +83,14 @@
 
   <div id="done" class="hidden">
     <h2>Tamam shod!</h2>
-    <p>Kalameh ro be yadet basteh va bazi ro shoro konid!</p>
-    <button onclick="revealAllRoles()">Namayesh hameye naghsh-ha 🔍</button>
+    <p>Kalameh ro be yadet bashe va bazi ro shoro konid!</p>
+    <button onclick="revealAllRoles()">Ki imposter bod? Paydash kardem? 🔍</button>
   </div>
 
   <div id="reveal" class="hidden">
-    <h2>Naghshe-ha 📜</h2>
+    <h2>Kalimeh 📜</h2>
     <ul id="revealList" style="list-style:none; padding:0;"></ul>
-    <button onclick="location.reload()">Az Aval 🔁</button>
+    <button onclick="location.reload()">Dobare bazi mikoni </button>
   </div>
 
   <script>
@@ -113,7 +113,7 @@
     function showNameInputs() {
       totalPlayers = parseInt(document.getElementById('playerCount').value);
       if (isNaN(totalPlayers) || totalPlayers < 3) {
-        alert("Lotfan az 3 nafar be bala entekhab konid.");
+        alert("Lotfan az 3 nafar be bala entekhab konem.");
         return;
       }
 
@@ -122,7 +122,7 @@
       for (let i = 0; i < totalPlayers; i++) {
         const input = document.createElement('input');
         input.type = 'text';
-        input.placeholder = Esme bazikon ${i + 1};
+        input.placeholder = `Esme bazikonha ${i + 1}`;
         input.required = true;
         nameInputsDiv.appendChild(input);
       }
@@ -143,9 +143,9 @@
         chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
       }
 
-      roles = Array(totalPlayers).fill(✅ Kalameh: \"${chosenWord}\");
+      roles = Array(totalPlayers).fill(`✅ Kalameh: \"${chosenWord}\"`);
       const imposterIndex = Math.floor(Math.random() * totalPlayers);
-      roles[imposterIndex] = "❌ To Impostori! Be hich kas nago! 😈";
+      roles[imposterIndex] = "❌ To Impostori! Be hich kas nago havaset be gapa bashe! 😈";
 
       currentPlayer = 0;
       document.getElementById('nameEntry').classList.add('hidden');
@@ -154,7 +154,7 @@
     }
 
     function updatePlayerLabel() {
-      document.getElementById('playerLabel').textContent = ${playerNames[currentPlayer]}: Bazikon ${currentPlayer + 1} az ${totalPlayers};
+      document.getElementById('playerLabel').textContent = `${playerNames[currentPlayer]}: Bazikon ${currentPlayer + 1} az ${totalPlayers}`;
       document.getElementById('roleDisplay').classList.add('hidden');
     }
 
@@ -182,7 +182,7 @@
       for (let i = 0; i < playerNames.length; i++) {
         const li = document.createElement('li');
         const isImp = roles[i].includes("Impostori");
-        li.textContent = ${playerNames[i]}: ${roles[i]};
+        li.textContent = `${playerNames[i]}: ${roles[i]}`;
         li.style.color = isImp ? 'red' : 'lightgreen';
         list.appendChild(li);
       }
