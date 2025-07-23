@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Imposter Game (Pinglish)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    .hidden { display: none; }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input {
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: 250px;
+    }
+    .name-inputs input {
+      display: block;
+      margin: 10px auto;
+    }
+    .role-imposter {
+      background-color: #ff4444;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .role-regular {
+      background-color: #33cc33;
+      padding: 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Imposter (Kalameh Version)</h1>
+
+  <div id="setup">
+    <p>Chand nafar hastid?</p>
+    <input type="number" id="playerCount" min="3" max="15" value="5" />
+
+    <p>Kalameh morede nazar ro vared kon (optional):</p>
+    <input type="text" id="customWord" placeholder="Masalan: pizza, darya, etc" />
+
+    <br />
+    <button onclick="showNameInputs()">Edame</button>
+  </div>
+
+  <div id="nameEntry" class="hidden">
+    <h2>Esme har bazikon ro benevis:</h2>
+    <form id="nameForm" onsubmit="startGame(); return false;">
+      <div id="nameInputs" class="name-inputs"></div>
+      <button type="submit">Shoroo Bazi</button>
+    </form>
+  </div>
+
+  <div id="game" class="hidden">
+    <p>Telefon ro be bazi-kon-e badi bede va roosh click kon!</p>
+    <h2 id="playerLabel"></h2>
+    <button onclick="showRole()">Nemayeshe naghsh</button>
+    <div id="roleDisplay" class="hidden">
+      <h2 id="roleText" class=""></h2>
+      <button onclick="nextPlayer()">Bede be bazi-kon-e badi</button>
+    </div>
+  </div>
+
+  <div id="done" class="hidden">
+    <h2>Tamam shod!</h2>
+    <p>Kalameh ro be yadet basteh va bazi ro shoro konid!</p>
+    <button onclick="revealAllRoles()">Namayesh hameye naghsh-ha 🔍</button>
+  </div>
+
+  <div id="reveal" class="hidden">
+    <h2>Naghshe-ha 📜</h2>
+    <ul id="revealList" style="list-style:none; padding:0;"></ul>
+    <button onclick="location.reload()">Az Aval 🔁</button>
+  </div>
+
+  <script>
+    let roles = [];
+    let playerNames = [];
+    let currentPlayer = 0;
+    let totalPlayers = 0;
+    let chosenWord = "";
+
+    const wordList = [
+      "Afghanistan", "darya", "mashin", "doctor", "sinama",
+      "madrese", "kebab", "hotel", "Agha Hadi", "Kili",
+      "miveh", "bimarestan", "parvaz", "Agha Mahdi", "bazi komputeri",
+      "Khanoom Mazarati", "Hania", "Elmira", "Javad", "Mohammad",
+      "Amo Davood", "Afsaneh", "Maryam", "Danial", "urlaub", "kamera",
+      "Zemeston", "Barf", "Pol", "kar", "Gaza", "hatish", "grill", "mehmoni",
+      "lagbazi", "dozd", "havapeyma", "restaurant", "football", "tafrih", "camping"
+    ];
+
+    function showNameInputs() {
+      totalPlayers = parseInt(document.getElementById('playerCount').value);
+      if (isNaN(totalPlayers) || totalPlayers < 3) {
+        alert("Lotfan az 3 nafar be bala entekhab konid.");
+        return;
+      }
+
+      const nameInputsDiv = document.getElementById('nameInputs');
+      nameInputsDiv.innerHTML = '';
+      for (let i = 0; i < totalPlayers; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = Esme bazikon ${i + 1};
+        input.required = true;
+        nameInputsDiv.appendChild(input);
+      }
+
+      document.getElementById('setup').classList.add('hidden');
+      document.getElementById('nameEntry').classList.remove('hidden');
+    }
+
+    function startGame() {
+      const inputs = document.querySelectorAll('#nameInputs input');
+      playerNames = Array.from(inputs).map(input => input.value.trim());
+
+      const customInput = document.getElementById('customWord').value.trim();
+
+      if (customInput.length > 0) {
+        chosenWord = customInput;
+      } else {
+        chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
+      }
+
+      roles = Array(totalPlayers).fill(✅ Kalameh: \"${chosenWord}\");
+      const imposterIndex = Math.floor(Math.random() * totalPlayers);
+      roles[imposterIndex] = "❌ To Impostori! Be hich kas nago! 😈";
+
+      currentPlayer = 0;
+      document.getElementById('nameEntry').classList.add('hidden');
+      document.getElementById('game').classList.remove('hidden');
+      updatePlayerLabel();
+    }
+
+    function updatePlayerLabel() {
+      document.getElementById('playerLabel').textContent = ${playerNames[currentPlayer]}: Bazikon ${currentPlayer + 1} az ${totalPlayers};
+      document.getElementById('roleDisplay').classList.add('hidden');
+    }
+
+    function showRole() {
+      const isImposter = roles[currentPlayer].includes("Impostori");
+      const roleText = document.getElementById('roleText');
+      roleText.textContent = roles[currentPlayer];
+      roleText.className = isImposter ? 'role-imposter' : 'role-regular';
+      document.getElementById('roleDisplay').classList.remove('hidden');
+    }
+
+    function nextPlayer() {
+      currentPlayer++;
+      if (currentPlayer >= totalPlayers) {
+        document.getElementById('game').classList.add('hidden');
+        document.getElementById('done').classList.remove('hidden');
+      } else {
+        updatePlayerLabel();
+      }
+    }
+
+    function revealAllRoles() {
+      const list = document.getElementById('revealList');
+      list.innerHTML = '';
+      for (let i = 0; i < playerNames.length; i++) {
+        const li = document.createElement('li');
+        const isImp = roles[i].includes("Impostori");
+        li.textContent = ${playerNames[i]}: ${roles[i]};
+        li.style.color = isImp ? 'red' : 'lightgreen';
+        list.appendChild(li);
+      }
+      document.getElementById('done').classList.add('hidden');
+      document.getElementById('reveal').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>
